@@ -26,13 +26,14 @@ func TestWriteAtBuffer(t *testing.T) {
 	b.Close()
 
 	tests := []struct {
-		n    int
-		data []byte
+		n       int
+		data    []byte
+		bufSize int
 	}{
-		{2, []byte{1, 2}},
-		{2, []byte{3, 4}},
-		{1, []byte{5, 0}},
-		{2, []byte{6, 7}},
+		{2, []byte{1, 2}, 5},
+		{2, []byte{3, 4}, 3},
+		{1, []byte{5, 0}, 2},
+		{2, []byte{6, 7}, 0},
 	}
 
 	for i, test := range tests {
@@ -51,6 +52,10 @@ func TestWriteAtBuffer(t *testing.T) {
 
 			if string(buf) != string(test.data) {
 				t.Errorf("got %v, expected %v", buf, test.data)
+			}
+
+			if test.bufSize != int(b.bufSize) {
+				t.Errorf("unexpected buffer size; got %d, expected %d", b.bufSize, test.bufSize)
 			}
 		})
 	}

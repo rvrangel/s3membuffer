@@ -101,8 +101,10 @@ func (b *s3DownloadBuffer) Read(p []byte) (int, error) {
 	// if the buffer provided is smaller than the chunk size, we need to put the remaining data in a new chunk
 	if n < chunkSize {
 		chunk = chunk[n:]
+		chunkSize = int64(len(chunk))
 
-		b.readPos -= int64(len(chunk))
+		b.readPos -= chunkSize
+		b.bufSize += chunkSize
 		b.bufs[b.readPos] = chunk
 	}
 
